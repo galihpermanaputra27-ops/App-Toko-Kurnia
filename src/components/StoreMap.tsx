@@ -1,54 +1,29 @@
-import { APIProvider, Map, AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 import { useStore } from "@/lib/store-data";
 
-const API_KEY =
-  (process.env.GOOGLE_MAPS_PLATFORM_KEY as string) ||
-  (import.meta as unknown as { env: { VITE_GOOGLE_MAPS_PLATFORM_KEY?: string } }).env
-    ?.VITE_GOOGLE_MAPS_PLATFORM_KEY ||
-  (globalThis as unknown as { GOOGLE_MAPS_PLATFORM_KEY?: string }).GOOGLE_MAPS_PLATFORM_KEY ||
-  "";
-
-const hasValidKey = Boolean(API_KEY) && API_KEY !== "YOUR_API_KEY";
+const DEFAULT_MAP_EMBED_URL =
+  "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d247.45394705116823!2d108.37612992165582!3d-7.095466554619338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1784953863142!5m2!1sid!2sid";
 
 export function StoreMap() {
   const { store } = useStore();
 
-  // Default position for the store
-  const position = {
-    lat: "lat" in store ? (store.lat as number) : -7.1352,
-    lng: "lng" in store ? (store.lng as number) : 108.3615,
-  };
-
-  if (!hasValidKey) {
-    return (
-      <div className="flex h-40 w-full flex-col items-center justify-center rounded-3xl border border-border bg-muted/50 p-4 text-center">
-        <p className="text-xs font-semibold text-muted-foreground mb-2">
-          Google Maps API Key Required
-        </p>
-        <p className="text-[10px] text-muted-foreground leading-relaxed">
-          Please add <code>GOOGLE_MAPS_PLATFORM_KEY</code> to your project secrets in Settings.
-        </p>
-      </div>
-    );
-  }
+  const embedUrl =
+    "mapEmbedUrl" in store && store.mapEmbedUrl
+      ? (store.mapEmbedUrl as string)
+      : DEFAULT_MAP_EMBED_URL;
 
   return (
-    <div className="h-40 w-full overflow-hidden rounded-3xl border border-border shadow-[var(--shadow-card)]">
-      <APIProvider apiKey={API_KEY} version="weekly">
-        <Map
-          defaultCenter={position}
-          defaultZoom={15}
-          mapId="DEMO_MAP_ID"
-          gestureHandling="greedy"
-          disableDefaultUI
-          internalUsageAttributionIds={["gmp_mcp_codeassist_v1_aistudio"]}
-          style={{ width: "100%", height: "100%" }}
-        >
-          <AdvancedMarker position={position}>
-            <Pin background="#059669" glyphColor="#fff" borderColor="#047857" />
-          </AdvancedMarker>
-        </Map>
-      </APIProvider>
+    <div className="relative h-56 w-full overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
+      <iframe
+        src={embedUrl}
+        width="100%"
+        height="100%"
+        style={{ border: 0 }}
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
+        title="Lokasi Toko Kurnia Panawangan"
+        className="h-full w-full rounded-3xl"
+      />
     </div>
   );
 }

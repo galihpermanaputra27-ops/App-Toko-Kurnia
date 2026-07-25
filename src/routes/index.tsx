@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, MapPin, Star, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { ProductCard } from "@/components/ProductCard";
 import { useProducts, useStore, useCategories, useHero } from "@/lib/store-data";
 import { useState, useEffect } from "react";
@@ -207,9 +208,9 @@ function Home() {
               className="flex flex-col items-center gap-1.5"
             >
               <span
-                className={`flex h-14 w-14 items-center justify-center rounded-2xl ${c.color || "bg-amber-100"} text-2xl shadow-[var(--shadow-card)]`}
+                className={`flex h-14 w-14 items-center justify-center rounded-2xl ${c.color || "bg-amber-100"} shadow-[var(--shadow-card)]`}
               >
-                {c.emoji}
+                <CategoryIcon name={c.emoji} className="h-6 w-6 text-foreground" />
               </span>
               <span className="text-center text-[10.5px] font-medium leading-tight">{c.name}</span>
             </Link>

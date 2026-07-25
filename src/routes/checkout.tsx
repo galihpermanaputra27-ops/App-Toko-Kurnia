@@ -3,7 +3,7 @@ import { ArrowLeft, Clock, Locate, Loader2, MapPin, MessageCircle } from "lucide
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useCart } from "@/lib/cart";
-import { STORE, formatIDR } from "@/lib/store-data";
+import { STORE, formatIDR, useStore, formatWaPhone } from "@/lib/store-data";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/checkout")({
@@ -30,6 +30,7 @@ function getHaversineDistanceKm(lat1: number, lon1: number, lat2: number, lon2: 
 
 function Checkout() {
   const { detailed, subtotal, clear } = useCart();
+  const { store } = useStore();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -164,7 +165,8 @@ function Checkout() {
     lines.push("Mohon konfirmasi ketersediaan & pesanan. Terima kasih 🙏");
 
     const text = encodeURIComponent(lines.join("\n"));
-    const url = `https://wa.me/${STORE.phone}?text=${text}`;
+    const targetPhone = formatWaPhone(store?.phone || STORE.phone);
+    const url = `https://wa.me/${targetPhone}?text=${text}`;
 
     localStorage.setItem("last_order_url", url);
 

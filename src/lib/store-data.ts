@@ -11,20 +11,31 @@ import {
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "./firebase";
 
+export function formatWaPhone(phoneStr: string): string {
+  if (!phoneStr) return "628112345463";
+  let cleaned = phoneStr.replace(/\D/g, "");
+  if (cleaned.startsWith("0")) {
+    cleaned = "62" + cleaned.slice(1);
+  }
+  return cleaned || "628112345463";
+}
+
 export const STORE = {
   name: "Toko Kurnia",
   tagline: "Sembako lengkap, harga bersahabat",
   address: "Panawangan, Kab. Ciamis",
   hours: "Setiap hari · 06.00 – 21.00 WIB",
-  phone: "6281234567890", // WhatsApp (international format, no +)
+  phone: "628112345463", // WhatsApp (international format, no +)
   rating: 4.9,
   reviews: 328,
   googleReviewUrl: "https://g.page/r/tokokurnia/review",
   instagram: "https://instagram.com/tokokurnia",
   facebook: "https://facebook.com/tokokurnia",
-  mapUrl: "https://maps.google.com/?q=Toko+Kurnia+Bandung",
-  lat: -7.1352,
-  lng: 108.3615,
+  mapUrl: "https://maps.google.com/?q=Toko+Kurnia+Panawangan",
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d247.45394705116823!2d108.37612992165582!3d-7.095466554619338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1784953863142!5m2!1sid!2sid",
+  lat: -7.0955059,
+  lng: 108.37621,
   coverImage: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?q=80&w=600",
   logo: "🏪",
 };
@@ -37,14 +48,19 @@ export type Category = {
 };
 
 export const CATEGORIES: Category[] = [
-  { slug: "dapur", name: "Kebutuhan Dapur", emoji: "🍳", color: "bg-amber-100" },
-  { slug: "rumah", name: "Kebutuhan Rumah", emoji: "🏠", color: "bg-blue-100" },
-  { slug: "makanan", name: "Makanan", emoji: "🍕", color: "bg-orange-100" },
-  { slug: "minuman", name: "Minuman", emoji: "🥤", color: "bg-sky-100" },
-  { slug: "segar-beku", name: "Produk segar dan Beku", emoji: "❄️", color: "bg-emerald-100" },
-  { slug: "pertanian", name: "Pertanian", emoji: "🌾", color: "bg-green-100" },
-  { slug: "peternakan", name: "Peternakan", emoji: "🐓", color: "bg-red-100" },
-  { slug: "pulsa-data", name: "Pulsa & Paket Data", emoji: "📱", color: "bg-purple-100" },
+  { slug: "dapur", name: "Kebutuhan Dapur", emoji: "Utensils", color: "bg-amber-100" },
+  { slug: "rumah", name: "Kebutuhan Rumah", emoji: "Home", color: "bg-blue-100" },
+  { slug: "makanan", name: "Makanan", emoji: "Pizza", color: "bg-orange-100" },
+  { slug: "minuman", name: "Minuman", emoji: "CupSoda", color: "bg-sky-100" },
+  {
+    slug: "segar-beku",
+    name: "Produk segar dan Beku",
+    emoji: "Snowflake",
+    color: "bg-emerald-100",
+  },
+  { slug: "pertanian", name: "Pertanian", emoji: "Sprout", color: "bg-green-100" },
+  { slug: "peternakan", name: "Peternakan", emoji: "Egg", color: "bg-red-100" },
+  { slug: "pulsa-data", name: "Pulsa & Paket Data", emoji: "Smartphone", color: "bg-purple-100" },
 ];
 
 export type Product = {

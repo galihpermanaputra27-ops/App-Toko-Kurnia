@@ -11,7 +11,7 @@ import {
   Shield,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { useStore } from "@/lib/store-data";
+import { useStore, formatWaPhone } from "@/lib/store-data";
 import { StoreMap } from "@/components/StoreMap";
 
 export const Route = createFileRoute("/profile")({
@@ -76,7 +76,11 @@ function Profile() {
       <div className="mt-6 space-y-3 px-5">
         <InfoRow icon={<MapPin className="h-4 w-4" />} label="Alamat" value={store.address} />
         <InfoRow icon={<Clock className="h-4 w-4" />} label="Jam buka" value={store.hours} />
-        <InfoRow icon={<Phone className="h-4 w-4" />} label="WhatsApp" value={`+${store.phone}`} />
+        <InfoRow
+          icon={<Phone className="h-4 w-4" />}
+          label="WhatsApp"
+          value={`0${formatWaPhone(store.phone).replace(/^62/, "")}`}
+        />
       </div>
 
       <div className="mt-4 px-5">
@@ -85,7 +89,7 @@ function Profile() {
 
       <div className="mt-6 grid grid-cols-3 gap-3 px-5">
         <SocialCard
-          href={`https://wa.me/${store.phone}`}
+          href={`https://wa.me/${formatWaPhone(store.phone)}`}
           label="WhatsApp"
           icon={<MessageCircle className="h-5 w-5" />}
         />

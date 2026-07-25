@@ -22,6 +22,7 @@ import {
   Key,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { CategoryIcon, CATEGORY_FLAT_ICONS } from "@/components/CategoryIcon";
 import {
   useProducts,
   useCategories,
@@ -29,6 +30,7 @@ import {
   useHero,
   useAdminAuth,
   formatIDR,
+  formatWaPhone,
   type Product,
   type Category,
 } from "@/lib/store-data";
@@ -100,15 +102,16 @@ const HERO_GRADIENTS = [
 function AdminPage() {
   // Authentication State
   const { adminCreds, updateAdminCreds } = useAdminAuth();
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("admin_logged_in") === "true";
-    }
-    return false;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && sessionStorage.getItem("admin_logged_in") === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   // Admin Credential Management State
   const [secUsername, setSecUsername] = useState("");
@@ -179,6 +182,11 @@ function AdminPage() {
   const [stInstagram, setStInstagram] = useState(store.instagram);
   const [stFacebook, setStFacebook] = useState(store.facebook);
   const [stMapUrl, setStMapUrl] = useState(store.mapUrl);
+  const [stMapEmbedUrl, setStMapEmbedUrl] = useState(
+    "mapEmbedUrl" in store && store.mapEmbedUrl
+      ? (store.mapEmbedUrl as string)
+      : "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d247.45394705116823!2d108.37612992165582!3d-7.095466554619338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1784953863142!5m2!1sid!2sid",
+  );
   const [stCoverImage, setStCoverImage] = useState(store.coverImage || "");
   const [stLogo, setStLogo] = useState(store.logo || "🏪");
 
@@ -195,6 +203,11 @@ function AdminPage() {
     setStInstagram(store.instagram);
     setStFacebook(store.facebook);
     setStMapUrl(store.mapUrl);
+    setStMapEmbedUrl(
+      "mapEmbedUrl" in store && store.mapEmbedUrl
+        ? (store.mapEmbedUrl as string)
+        : "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d247.45394705116823!2d108.37612992165582!3d-7.095466554619338!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1784953863142!5m2!1sid!2sid",
+    );
     setStCoverImage(store.coverImage || "");
     setStLogo(store.logo || "🏪");
   }, [store]);
@@ -472,13 +485,14 @@ function AdminPage() {
         tagline: stTagline.trim(),
         address: stAddress.trim(),
         hours: stHours.trim(),
-        phone: stPhone.trim(),
+        phone: formatWaPhone(stPhone.trim()),
         rating: Number(stRating),
         reviews: Number(stReviews),
         googleReviewUrl: stGoogleReviewUrl.trim(),
         instagram: stInstagram.trim(),
         facebook: stFacebook.trim(),
         mapUrl: stMapUrl.trim(),
+        mapEmbedUrl: stMapEmbedUrl.trim() || undefined,
         coverImage: stCoverImage.trim() || undefined,
         logo: stLogo.trim() || undefined,
       });
@@ -818,7 +832,7 @@ function AdminPage() {
                             : "bg-secondary text-secondary-foreground hover:bg-neutral-200",
                         )}
                       >
-                        <span>{c.emoji}</span>
+                        <CategoryIcon name={c.emoji} className="h-3.5 w-3.5" />
                         <span>{c.name}</span>
                       </button>
                     ))}
@@ -1059,7 +1073,7 @@ function AdminPage() {
                   >
                     {categories.map((cat) => (
                       <option key={cat.slug} value={cat.slug}>
-                        {cat.emoji} {cat.name}
+                        {cat.name}
                       </option>
                     ))}
                   </select>
@@ -1200,11 +1214,11 @@ function AdminPage() {
                       <div className="flex items-center gap-3">
                         <span
                           className={cn(
-                            "flex h-11 w-11 items-center justify-center rounded-xl text-2xl shadow-inner",
+                            "flex h-11 w-11 items-center justify-center rounded-xl shadow-inner",
                             cat.color || "bg-amber-100",
                           )}
                         >
-                          {cat.emoji}
+                          <CategoryIcon name={cat.emoji} className="h-5 w-5 text-foreground" />
                         </span>
                         <div>
                           <h4 className="text-sm font-bold text-foreground">{cat.name}</h4>
@@ -1301,21 +1315,59 @@ function AdminPage() {
                   </p>
                 </div>
 
-                {/* Emoji Select */}
-                <div className="space-y-1">
-                  <label className="text-xs font-semibold text-foreground">Emoji Kategori</label>
-                  <div className="flex gap-2">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary text-2xl border border-border">
-                      {catEmoji}
+                {/* Flat Icon Selection */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-foreground">
+                    Icon Kategori (Flat Icon 1 Warna)
+                  </label>
+                  <div className="flex items-center gap-3 p-2.5 rounded-2xl border border-border bg-secondary/30">
+                    <span
+                      className={cn(
+                        "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-sm border border-border/80",
+                        catColor || "bg-amber-100",
+                      )}
+                    >
+                      <CategoryIcon name={catEmoji} className="h-6 w-6 text-foreground" />
                     </span>
-                    <input
-                      type="text"
-                      maxLength={2}
-                      value={catEmoji}
-                      onChange={(e) => setCatEmoji(e.target.value)}
-                      className="w-full rounded-xl border border-border px-3.5 text-sm outline-none focus:border-primary"
-                      placeholder="Ketik 1 emoji..."
-                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-foreground">
+                        Icon Terpilih: {catEmoji || "Utensils"}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        Pilih icon flat 1-warna dari pustaka di bawah
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Icon Library Selector */}
+                  <div className="space-y-1 pt-1">
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      Pustaka Icon Flat (Klik untuk memilih):
+                    </span>
+                    <div className="grid grid-cols-5 gap-2 max-h-52 overflow-y-auto p-2 rounded-2xl border border-border bg-card">
+                      {CATEGORY_FLAT_ICONS.map((item) => {
+                        const isSelected = catEmoji.toLowerCase() === item.id.toLowerCase();
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setCatEmoji(item.id)}
+                            className={cn(
+                              "flex flex-col items-center justify-center gap-1 p-2 rounded-xl border text-center transition-all cursor-pointer",
+                              isSelected
+                                ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20 scale-105 font-bold"
+                                : "border-border/60 bg-secondary/40 text-foreground hover:bg-neutral-200 hover:border-neutral-300",
+                            )}
+                            title={item.name}
+                          >
+                            <CategoryIcon name={item.id} className="h-5 w-5" />
+                            <span className="text-[9px] font-medium truncate w-full">
+                              {item.name}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
@@ -1576,6 +1628,22 @@ function AdminPage() {
                 onChange={(e) => setStMapUrl(e.target.value)}
                 className="w-full rounded-xl border border-border bg-transparent px-3.5 py-2.5 text-sm outline-none focus:border-primary text-xs"
               />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">
+                Link Embed iFrame Google Maps (URL `src="..."`)
+              </label>
+              <input
+                type="text"
+                value={stMapEmbedUrl}
+                onChange={(e) => setStMapEmbedUrl(e.target.value)}
+                className="w-full rounded-xl border border-border bg-transparent px-3.5 py-2.5 text-xs outline-none focus:border-primary font-mono"
+                placeholder="https://www.google.com/maps/embed?..."
+              />
+              <p className="text-[10px] text-muted-foreground">
+                * Masukkan atribut URL src dari tag &lt;iframe&gt; Google Maps.
+              </p>
             </div>
 
             {/* Save Profile Button */}

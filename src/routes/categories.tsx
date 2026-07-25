@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { CategoryIcon } from "@/components/CategoryIcon";
 import { ProductCard } from "@/components/ProductCard";
 import { CATEGORIES, useProducts, useCategories } from "@/lib/store-data";
 import { cn } from "@/lib/utils";
@@ -71,7 +72,7 @@ function CategoriesPage() {
                   : "bg-secondary text-secondary-foreground",
               )}
             >
-              <span>{c.emoji}</span>
+              <CategoryIcon name={c.emoji} className="h-3.5 w-3.5" />
               {c.name}
             </button>
           ))}
