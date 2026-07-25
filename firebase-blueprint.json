@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Product item in the warung catalog",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 200 },
+        "price": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 50 },
+        "category": { "type": "string", "maxLength": 50 },
+        "emoji": { "type": "string", "maxLength": 20 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "featured": { "type": "boolean" },
+        "promo": { "type": "number" },
+        "stockStatus": { "type": "string", "enum": ["tersedia", "terbatas", "habis"] },
+        "image": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["id", "name", "price", "unit", "category", "emoji", "description", "stockStatus"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category definition",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "maxLength": 50 },
+        "name": { "type": "string", "maxLength": 100 },
+        "emoji": { "type": "string", "maxLength": 20 },
+        "color": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["slug", "name", "emoji", "color"]
+    },
+    "Store": {
+      "title": "Store",
+      "description": "Store metadata and profile info",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 200 },
+        "tagline": { "type": "string", "maxLength": 300 },
+        "address": { "type": "string", "maxLength": 500 },
+        "hours": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "rating": { "type": "number" },
+        "reviews": { "type": "number" },
+        "googleReviewUrl": { "type": "string", "maxLength": 500 },
+        "instagram": { "type": "string", "maxLength": 500 },
+        "facebook": { "type": "string", "maxLength": 500 },
+        "mapUrl": { "type": "string", "maxLength": 500 },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "coverImage": { "type": "string", "maxLength": 1000 },
+        "logo": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["name", "address", "phone"]
+    },
+    "Hero": {
+      "title": "Hero",
+      "description": "Hero banner slides and promo configuration",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 300 },
+        "subtitle": { "type": "string", "maxLength": 500 },
+        "promoLabel": { "type": "string", "maxLength": 100 },
+        "promoText": { "type": "string", "maxLength": 300 },
+        "slides": { "type": "array" }
+      }
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Catalog products collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Product categories collection"
+    },
+    "/settings/{settingId}": {
+      "schema": { "type": "object" },
+      "description": "Store configuration, hero promo slides, and admin security settings"
+    }
+  }
+}
