@@ -48,8 +48,17 @@ function CartPage() {
                 key={product.id}
                 className="flex gap-3 rounded-2xl border border-border bg-card p-3 shadow-[var(--shadow-card)]"
               >
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-3xl">
-                  {product.emoji}
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-3xl overflow-hidden">
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    product.emoji
+                  )}
                 </div>
                 <div className="flex flex-1 flex-col">
                   <div className="flex items-start justify-between gap-2">
